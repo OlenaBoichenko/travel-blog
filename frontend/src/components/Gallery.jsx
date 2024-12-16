@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const Gallery = () => {
   const [media, setMedia] = useState([]);
@@ -11,7 +12,7 @@ const Gallery = () => {
 
   const fetchMedia = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/content');
+      const response = await axios.get(`${API_URL}/api/content`);
       // Фильтруем только медиа-контент
       const mediaContent = response.data.map(item => ({
         id: item._id,
@@ -40,13 +41,13 @@ const Gallery = () => {
             >
               {item.type === 'image' ? (
                 <img
-                  src={`http://localhost:5000${item.url}`}
+                  src={`${API_URL}${item.url}`}
                   alt={item.title}
                   className="w-full h-48 object-cover transform transition-transform duration-300 group-hover:scale-110"
                 />
               ) : (
                 <video
-                  src={`http://localhost:5000${item.url}`}
+                  src={`${API_URL}${item.url}`}
                   className="w-full h-48 object-cover"
                   muted
                   onMouseOver={e => e.target.play()}
@@ -81,13 +82,13 @@ const Gallery = () => {
             <div className="relative">
               {selectedMedia.type === 'image' ? (
                 <img
-                  src={`http://localhost:5000${selectedMedia.url}`}
+                  src={`${API_URL}${selectedMedia.url}`}
                   alt={selectedMedia.title}
                   className="w-full max-h-[80vh] object-contain"
                 />
               ) : (
                 <video
-                  src={`http://localhost:5000${selectedMedia.url}`}
+                  src={`${API_URL}${selectedMedia.url}`}
                   className="w-full max-h-[80vh] object-contain"
                   controls
                   autoPlay

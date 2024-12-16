@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
+import { API_URL } from './config';
 
 const ContentList = ({ user }) => {
   const [content, setContent] = useState([]);
@@ -13,7 +14,7 @@ const ContentList = ({ user }) => {
 
   const fetchContent = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/content');
+      const response = await axios.get(`${API_URL}/api/content`);
       setContent(response.data);
       // Инициализируем состояние реакций для каждого поста
       const initialReactions = {};
@@ -33,7 +34,7 @@ const ContentList = ({ user }) => {
     if (!comment.trim()) return;
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/content/${contentId}/comments`, {
+      const response = await axios.post(`${API_URL}/api/content/${contentId}/comments`, {
         text: comment,
         author: user ? user.username : 'Гость'
       });
@@ -52,7 +53,7 @@ const ContentList = ({ user }) => {
 
   const handleReaction = async (contentId, reactionType) => {
     try {
-      await axios.post(`http://localhost:5000/api/content/${contentId}/reactions`, {
+      await axios.post(`${API_URL}/api/content/${contentId}/reactions`, {
         type: reactionType,
         isGuest: !user
       });
@@ -85,13 +86,13 @@ const ContentList = ({ user }) => {
               <div className="relative h-96 bg-gray-100">
                 {item.mediaType === 'image' ? (
                   <img
-                    src={`http://localhost:5000${item.mediaUrl}`}
+                    src={`${API_URL}${item.mediaUrl}`}
                     alt={item.title}
                     className="w-full h-full object-cover"
                   />
                 ) : (
                   <video
-                    src={`http://localhost:5000${item.mediaUrl}`}
+                    src={`${API_URL}${item.mediaUrl}`}
                     controls
                     className="w-full h-full object-cover"
                   />

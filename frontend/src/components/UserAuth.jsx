@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 const UserAuth = ({ onAuthSuccess }) => {
   const [username, setUsername] = useState('');
@@ -16,7 +17,7 @@ const UserAuth = ({ onAuthSuccess }) => {
 
     setIsCheckingUsername(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/users/check-username', { username });
+      const response = await axios.post(`${API_URL}/api/users/check-username`, { username });
       setIsUsernameAvailable(response.data.available);
     } catch (error) {
       console.error('Error checking username:', error);
@@ -42,7 +43,7 @@ const UserAuth = ({ onAuthSuccess }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/users/auth', {
+      const response = await axios.post(`${API_URL}/api/users/auth`, {
         username,
         password
       });
