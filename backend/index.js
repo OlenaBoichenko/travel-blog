@@ -32,11 +32,19 @@ if (!fs.existsSync('uploads')) {
 
 // Настройка CORS
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: function(origin, callback) {
+    const allowedOrigins = ['http://localhost:5173', 'https://travel-blog-ca.netlify.app'];
+    // Разрешаем запросы без origin (например, от Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Guest-Auth', 'Range'],
-  exposedHeaders: ['Content-Range', 'Accept-Ranges', 'Content-Length', 'Content-Type']
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
