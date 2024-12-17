@@ -1,54 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './Home';
 import ContentList from './ContentList';
 import Login from './Login';
 import UploadContent from './UploadContent';
 import Gallery from './Gallery';
+import InteractiveMap from './components/InteractiveMap';
 
 function App() {
   const [user, setUser] = useState(null);
 
-  // Загружаем пользователя из localStorage при запуске
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('http://localhost:5001/api/auth/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.message) {
+          setUser(data);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+        localStorage.removeItem('token');
+      });
     }
   }, []);
 
   const handleLogin = (userData) => {
-    // userData содержит { token, user }
-    const { token, user } = userData;
-    
-    // Сохраняем токен отдельно
-    localStorage.setItem('token', token);
-    
-    // Сохраняем данные пользователя
-    localStorage.setItem('user', JSON.stringify(user));
-    
-    // Устанавливаем данные пользователя в состояние
-    setUser(user);
+    setUser(userData);
   };
 
   const handleLogout = () => {
-    // Очищаем данные при выходе
-    localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
   };
 
+  const navLinks = [
+    { to: '/', text: 'Главная' },
+    { to: '/map', text: 'Интерактивная карта' },
+    { to: '/gallery', text: 'Галерея' },
+    { to: '/upload', text: 'Загрузить контент', requiresAuth: true },
+    { to: '/login', text: 'Вход', hideWhenAuth: true },
+    { to: '/blog', text: 'Блог' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Navbar user={user} onLogout={handleLogout} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/blog" element={<ContentList user={user} />} />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/upload" element={<UploadContent user={user} />} />
-        <Route path="/gallery" element={<Gallery user={user} />} />
-      </Routes>
+    <div className="d-flex flex-column min-vh-100">
+      <Navbar 
+        user={user} 
+        onLogout={handleLogout}
+        links={navLinks}
+      />
+      <main className="flex-grow-1 container py-5 mt-5">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog" element={<ContentList user={user} />} />
+          <Route path="/map" element={<InteractiveMap />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/upload" element={<UploadContent user={user} />} />
+          <Route path="/gallery" element={<Gallery user={user} />} />
+        </Routes>
+      </main>
+      <Footer />
     </div>
   );
 }

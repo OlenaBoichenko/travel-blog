@@ -16,7 +16,7 @@ const Gallery = ({ user }) => {
     try {
       const response = await axios.get(`${API_URL}/api/gallery`);
       setImages(response.data);
-      
+
       // Инициализируем состояние реакций
       const initialReactions = {};
       response.data.forEach(item => {
@@ -56,7 +56,7 @@ const Gallery = ({ user }) => {
 
   const getReactionCount = (item, reactionType) => {
     if (!item?.reactions) return 0;
-    
+
     const reactions = item.reactions;
     const userReactions = reactions[reactionType] || [];
     const guestReactions = reactions[`guest${reactionType.charAt(0).toUpperCase() + reactionType.slice(1)}`] || [];
@@ -75,59 +75,53 @@ const Gallery = ({ user }) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Галерея</h1>
-      
+    <div className="container my-5">
+      <h1 className="text-center mb-4">Галерея</h1>
+
       <UploadImage user={user} onImageUploaded={handleImageUploaded} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+      <div className="row mt-4">
         {images.map((item) => (
-          <article key={item._id} className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="aspect-w-16 aspect-h-9">
-              <img
-                src={`${API_URL}${item.imageUrl}`}
-                alt={item.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">{item.title}</h2>
-                <span className="text-sm text-gray-500">
-                  {format(new Date(item.createdAt), 'dd.MM.yyyy')}
-                </span>
+          <div key={item._id} className="col-12 col-md-6 col-lg-4 mb-4">
+            <div className="card h-100">
+              <div className="ratio ratio-1x1">
+                <img
+                  src={`${API_URL}${item.imageUrl}`}
+                  alt={item.title}
+                  className="card-img-top"
+                />
               </div>
-
-              <p className="text-gray-700 mb-6">{item.description}</p>
-
-              <div className="flex space-x-6">
-                <button
-                  onClick={() => handleReaction(item._id, 'likes')}
-                  className={`flex items-center space-x-2 transition-all ${
-                    userReactions[item._id]?.likes 
-                      ? 'text-blue-600' 
-                      : 'text-gray-500 hover:text-blue-600'
-                  }`}
-                >
-                  <span className="text-2xl">👍</span>
-                  <span className="font-medium">{getReactionCount(item, 'likes')}</span>
-                </button>
-
-                <button
-                  onClick={() => handleReaction(item._id, 'hearts')}
-                  className={`flex items-center space-x-2 transition-all ${
-                    userReactions[item._id]?.hearts 
-                      ? 'text-red-600' 
-                      : 'text-gray-500 hover:text-red-600'
-                  }`}
-                >
-                  <span className="text-2xl">❤️</span>
-                  <span className="font-medium">{getReactionCount(item, 'hearts')}</span>
-                </button>
+              <div className="card-body d-flex flex-column">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h5 className="card-title mb-0">{item.title}</h5>
+                  <small className="text-muted">
+                    {format(new Date(item.createdAt), 'dd.MM.yyyy')}
+                  </small>
+                </div>
+                <p className="card-text">{item.description}</p>
+                <div className="mt-auto">
+                  <div className="d-flex justify-content-start gap-3">
+                    <button
+                      onClick={() => handleReaction(item._id, 'likes')}
+                      className={`btn btn-sm d-flex align-items-center gap-1 ${
+                        userReactions[item._id]?.likes ? 'btn-primary' : 'btn-outline-primary'
+                      }`}
+                    >
+                      👍 <span>{getReactionCount(item, 'likes')}</span>
+                    </button>
+                    <button
+                      onClick={() => handleReaction(item._id, 'hearts')}
+                      className={`btn btn-sm d-flex align-items-center gap-1 ${
+                        userReactions[item._id]?.hearts ? 'btn-danger' : 'btn-outline-danger'
+                      }`}
+                    >
+                      ❤️ <span>{getReactionCount(item, 'hearts')}</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </article>
+          </div>
         ))}
       </div>
     </div>
@@ -135,3 +129,4 @@ const Gallery = ({ user }) => {
 };
 
 export default Gallery;
+

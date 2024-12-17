@@ -96,104 +96,92 @@ const ContentList = ({ user }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">Путевые заметки</h1>
+    <div className="container py-5">
+      <h1 className="text-center mb-5">Путевые заметки</h1>
       
-      <div className="space-y-8">
+      <div className="row row-cols-1 g-4">
         {content.map((item) => (
-          <article key={item._id} className="bg-white rounded-xl shadow-lg overflow-hidden">
-            {/* YouTube видео */}
-            {item.youtubeUrl && (
-              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                <iframe
-                  src={getYouTubeEmbedUrl(item.youtubeUrl)}
-                  className="absolute top-0 left-0 w-full h-full"
-                  title={item.title}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  loading="lazy"
-                />
-              </div>
-            )}
+          <div key={item._id} className="col">
+            <div className="card shadow-sm">
+              {/* YouTube видео */}
+              {item.youtubeUrl && (
+                <div className="ratio ratio-16x9">
+                  <iframe
+                    src={getYouTubeEmbedUrl(item.youtubeUrl)}
+                    title={item.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              )}
 
-            {/* Контент */}
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">{item.title}</h2>
-                <span className="text-sm text-gray-500">
-                  {format(new Date(item.createdAt), 'dd.MM.yyyy')}
-                </span>
-              </div>
-
-              <p className="text-gray-700 mb-6 leading-relaxed">{item.description}</p>
-
-              {/* Реакции */}
-              <div className="flex space-x-6 mb-6">
-                <button
-                  onClick={() => handleReaction(item._id, 'likes')}
-                  className={`flex items-center space-x-2 transition-all ${
-                    userReactions[item._id]?.likes 
-                      ? 'text-blue-600' 
-                      : 'text-gray-500 hover:text-blue-600'
-                  }`}
-                >
-                  <span className="text-2xl">👍</span>
-                  <span className="font-medium">{getReactionCount(item, 'likes')}</span>
-                </button>
-
-                <button
-                  onClick={() => handleReaction(item._id, 'hearts')}
-                  className={`flex items-center space-x-2 transition-all ${
-                    userReactions[item._id]?.hearts 
-                      ? 'text-red-600' 
-                      : 'text-gray-500 hover:text-red-600'
-                  }`}
-                >
-                  <span className="text-2xl">❤️</span>
-                  <span className="font-medium">{getReactionCount(item, 'hearts')}</span>
-                </button>
-              </div>
-
-              {/* Комментарии */}
-              <div className="border-t pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Комментарии</h3>
-                
-                <div className="space-y-4 mb-6">
-                  {(item.comments || []).map((comment, index) => (
-                    <div key={index} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-gray-900">
-                          {comment.author}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {format(new Date(comment.createdAt), 'dd.MM.yyyy HH:mm')}
-                        </span>
-                      </div>
-                      <p className="text-gray-700">{comment.text}</p>
-                    </div>
-                  ))}
+              {/* Контент */}
+              <div className="card-body">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h2 className="h5 card-title mb-0">{item.title}</h2>
+                  <span className="text-muted small">
+                    {format(new Date(item.createdAt), 'dd.MM.yyyy')}
+                  </span>
                 </div>
 
-                {/* Форма комментария */}
-                <div className="flex space-x-4">
-                  <input
-                    type="text"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Оставьте комментарий..."
-                    className="flex-1 min-w-0 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
+                <p className="card-text">{item.description}</p>
+
+                {/* Реакции */}
+                <div className="d-flex gap-3 mb-4">
                   <button
-                    onClick={() => handleComment(item._id)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    onClick={() => handleReaction(item._id, 'likes')}
+                    className={`btn btn-outline-primary ${userReactions[item._id]?.likes ? 'active' : ''}`}
                   >
-                    Отправить
+                    👍 {getReactionCount(item, 'likes')}
                   </button>
+                  <button
+                    onClick={() => handleReaction(item._id, 'hearts')}
+                    className={`btn btn-outline-danger ${userReactions[item._id]?.hearts ? 'active' : ''}`}
+                  >
+                    ❤️ {getReactionCount(item, 'hearts')}
+                  </button>
+                </div>
+
+                {/* Комментарии */}
+                <div className="border-top pt-4">
+                  <h3 className="h6 mb-4">Комментарии</h3>
+                  
+                  <div className="list-group mb-4">
+                    {(item.comments || []).map((comment, index) => (
+                      <div key={index} className="list-group-item">
+                        <div className="d-flex justify-content-between mb-2">
+                          <span className="fw-bold">{comment.author}</span>
+                          <span className="text-muted small">
+                            {format(new Date(comment.createdAt), 'dd.MM.yyyy HH:mm')}
+                          </span>
+                        </div>
+                        <p className="mb-0">{comment.text}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Форма комментария */}
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Оставьте комментарий..."
+                      className="form-control"
+                    />
+                    <button
+                      onClick={() => handleComment(item._id)}
+                      className="btn btn-primary"
+                    >
+                      Отправить
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </article>
+          </div>
         ))}
       </div>
     </div>

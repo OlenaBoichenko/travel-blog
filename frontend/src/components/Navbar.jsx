@@ -19,6 +19,9 @@ const NavigationBar = ({ user, onLogout }) => {
             <Nav.Link as={Link} to="/blog" active={isActive('/blog')}>
               Блог
             </Nav.Link>
+            <Nav.Link as={Link} to="/map" active={isActive('/map')}>
+              Интерактивная карта
+            </Nav.Link>
             <Nav.Link as={Link} to="/gallery" active={isActive('/gallery')}>
               Галерея
             </Nav.Link>
