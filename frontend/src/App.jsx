@@ -8,6 +8,7 @@ import Login from './Login';
 import UploadContent from './UploadContent';
 import Gallery from './Gallery';
 import InteractiveMap from './components/InteractiveMap';
+import { API_URL } from './config';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -15,7 +16,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('http://localhost:5001/api/auth/me', {
+      fetch(`${API_URL}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

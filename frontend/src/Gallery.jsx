@@ -34,21 +34,25 @@ const Gallery = ({ user }) => {
   const handleReaction = async (imageId, reactionType) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(`${API_URL}/api/gallery/${imageId}/reactions`, {
-        type: reactionType
-      }, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      
+      await axios.post(
+        `${API_URL}/api/gallery/${imageId}/reactions`,
+        { type: reactionType },
+        { headers }
+      );
 
+      // Обновляем состояние реакций
       setUserReactions(prev => ({
         ...prev,
         [imageId]: {
           ...prev[imageId],
-          [reactionType]: !prev[imageId]?.[reactionType]
+          [reactionType]: !prev[imageId][reactionType]
         }
       }));
 
-      await fetchImages();
+      // Обновляем список изображений
+      fetchImages();
     } catch (error) {
       console.error('Error handling reaction:', error);
     }
@@ -63,22 +67,19 @@ const Gallery = ({ user }) => {
     return userReactions.length + guestReactions.length;
   };
 
-  const handleImageUploaded = (newImage) => {
-    setImages(prevImages => [newImage, ...prevImages]);
-    setUserReactions(prev => ({
-      ...prev,
-      [newImage._id]: {
-        likes: false,
-        hearts: false
-      }
-    }));
+  const handleImageUploaded = () => {
+    fetchImages(); // Обновляем список изображений после загрузки
   };
 
   return (
     <div className="container my-5">
       <h1 className="text-center mb-4">Галерея</h1>
 
-      <UploadImage user={user} onImageUploaded={handleImageUploaded} />
+      {user && user.role === 'admin' && (
+        <div className="mb-4">
+          <UploadImage user={user} onImageUploaded={handleImageUploaded} />
+        </div>
+      )}
 
       <div className="row mt-4">
         {images.map((item) => (
@@ -129,4 +130,3 @@ const Gallery = ({ user }) => {
 };
 
 export default Gallery;
-
