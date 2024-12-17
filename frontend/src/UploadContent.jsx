@@ -56,93 +56,96 @@ const UploadContent = ({ user }) => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Добавить новое видео</h1>
+    <div className="container my-5">
+  <div className="card shadow-lg p-4 mx-auto" style={{ maxWidth: '800px' }}>
+    <h1 className="h3 fw-bold mb-4">Добавить новое видео</h1>
 
-        {error && (
-          <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-red-700">{error}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-              Заголовок
-            </label>
-            <input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-              Описание
-            </label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={4}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="youtubeUrl" className="block text-sm font-medium text-gray-700">
-              Ссылка на YouTube видео
-            </label>
-            <input
-              type="url"
-              id="youtubeUrl"
-              value={youtubeUrl}
-              onChange={(e) => setYoutubeUrl(e.target.value)}
-              placeholder="https://www.youtube.com/watch?v=..."
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              required
-            />
-            <div className="form-text text-sm text-gray-500">
-              Поддерживаются ссылки формата youtube.com/watch?v= и youtu.be/
-            </div>
-          </div>
-
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={loading}
-              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                loading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-            >
-              {loading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Добавление...
-                </>
-              ) : (
-                'Добавить видео'
-              )}
-            </button>
-          </div>
-        </form>
+    {error && (
+      <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
+        <svg
+          className="bi flex-shrink-0 me-2"
+          width="24"
+          height="24"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path d="M8.93 6.588a.5.5 0 0 0-.86 0L4.288 12.4A.5.5 0 0 0 4.714 13h6.572a.5.5 0 0 0 .427-.8L8.93 6.588zM8 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+        </svg>
+        <div>{error}</div>
       </div>
-    </div>
+    )}
+
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="title" className="form-label">
+          Заголовок
+        </label>
+        <input
+          type="text"
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="form-control"
+          required
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="description" className="form-label">
+          Описание
+        </label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={4}
+          className="form-control"
+          required
+        ></textarea>
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor="youtubeUrl" className="form-label">
+          Ссылка на YouTube видео
+        </label>
+        <input
+          type="url"
+          id="youtubeUrl"
+          value={youtubeUrl}
+          onChange={(e) => setYoutubeUrl(e.target.value)}
+          placeholder="https://www.youtube.com/watch?v=..."
+          className="form-control"
+          required
+        />
+        <div className="form-text">
+          Поддерживаются ссылки формата youtube.com/watch?v= и youtu.be/
+        </div>
+      </div>
+
+      <div className="d-flex justify-content-end">
+        <button
+          type="submit"
+          disabled={loading}
+          className={`btn btn-primary ${loading ? 'disabled' : ''}`}
+        >
+          {loading ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Добавление...
+            </>
+          ) : (
+            'Добавить видео'
+          )}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
   );
 };
 

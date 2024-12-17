@@ -55,9 +55,25 @@ router.post("/register", async (req, res) => {
     });
     
     await user.save();
+
+    // Создаем токен при регистрации
+    const token = jwt.sign(
+      { 
+        id: user._id, 
+        role: user.role,
+        username: user.username 
+      }, 
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     res.status(201).json({ 
-      message: "Регистрация успешна",
-      role: user.role
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        role: user.role
+      }
     });
   } catch (error) {
     console.error('Ошибка при регистрации:', error);
@@ -128,7 +144,11 @@ router.get('/me', authenticateToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Пользователь не найден" });
     }
-    res.json(user);
+    res.json({
+      id: user._id,
+      username: user.username,
+      role: user.role
+    });
   } catch (error) {
     console.error('Ошибка при получении данных пользователя:', error);
     res.status(500).json({ message: "Ошибка сервера" });

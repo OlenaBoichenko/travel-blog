@@ -15,33 +15,41 @@ function App() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    if (token) { 
       fetch(`${API_URL}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       })
       .then(res => res.json())
-      .then(data => {
+      .then(data => { 
         if (!data.message) {
           setUser(data);
+        } else { 
+          localStorage.removeItem('token');
         }
       })
       .catch(error => {
-        console.error('Error fetching user data:', error);
         localStorage.removeItem('token');
       });
     }
   }, []);
 
-  const handleLogin = (userData) => {
-    setUser(userData);
+  const handleLogin = (userData) => { 
+    // Проверяем, есть ли user в userData
+    if (userData.user) {
+      setUser(userData.user);
+    } else {
+      // Если нет user, значит все данные пользователя находятся в корне объекта
+      setUser(userData);
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
   };
+
 
   const navLinks = [
     { to: '/', text: 'Главная' },

@@ -21,10 +21,28 @@ const Login = ({ onLogin }) => {
         password,
       });
 
-      onLogin(response.data);
-      navigate('/');
+      console.log('Login response:', response.data);
+
+      // Проверяем наличие токена и данных пользователя
+      if (response.data.token && (response.data.user || response.data.role)) {
+        localStorage.setItem('token', response.data.token);
+        
+        // Если данные пользователя в response.data.user, используем их
+        // Иначе создаем объект пользователя из данных в корне ответа
+        const userData = response.data.user || {
+          id: response.data.id,
+          username: response.data.username,
+          role: response.data.role
+        };
+        
+        onLogin({ token: response.data.token, user: userData });
+        navigate('/');
+      } else {
+        setError('Неверный формат ответа от сервера');
+      }
     } catch (error) {
-      setError(error.response?.data?.message || 'Произошла ошибка');
+      console.error('Login error:', error.response?.data || error);
+      setError(error.response?.data?.message || 'Произошла ошибка при авторизации');
     }
   };
 

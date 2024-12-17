@@ -73,66 +73,66 @@ const UploadImage = ({ user, onImageUploaded }) => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Загрузить изображение</h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Название
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </label>
+    <div className="container mt-5">
+  <div className="card shadow-lg p-4 mx-auto" style={{ maxWidth: '600px' }}>
+    <h2 className="h4 fw-bold mb-4 text-center">Загрузить изображение</h2>
+
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label className="form-label">
+          Название
+        </label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+          className="form-control"
+        />
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label">
+          Описание
+        </label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+          rows="3"
+          className="form-control"
+        ></textarea>
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label">
+          Изображение
+        </label>
+        <input
+          type="file"
+          onChange={handleImageChange}
+          accept="image/*"
+          className="form-control"
+        />
+      </div>
+
+      {error && (
+        <div className="alert alert-danger text-sm" role="alert">
+          {error}
         </div>
+      )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Описание
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              rows="3"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-          </label>
-        </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="btn btn-primary w-100"
+      >
+        {loading ? 'Загрузка...' : 'Загрузить'}
+      </button>
+    </form>
+  </div>
+</div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Изображение
-            <input
-              type="file"
-              onChange={handleImageChange}
-              accept="image/*"
-              className="mt-1 block w-full text-sm text-gray-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-md file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100"
-            />
-          </label>
-        </div>
-
-        {error && (
-          <div className="text-red-600 text-sm">{error}</div>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-        >
-          {loading ? 'Загрузка...' : 'Загрузить'}
-        </button>
-      </form>
-    </div>
   );
 };
 
