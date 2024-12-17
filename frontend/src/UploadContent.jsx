@@ -1,33 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from './config';
 
-const UploadContent = () => {
+const UploadContent = ({ user }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [media, setMedia] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [youtubeUrl, setYoutubeUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
-  const handleMediaChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setMedia(file);
-      // Создаем превью для изображений
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setPreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        setPreview(null);
-      }
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,33 +17,48 @@ const UploadContent = () => {
     setError('');
 
     try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('description', description);
-      if (media) {
-        formData.append('media', media);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Необходимо авторизоваться');
+        setLoading(false);
+        return;
       }
 
-      await axios.post(`${API_URL}/api/content`, formData, {
+      await axios.post(`${API_URL}/api/content`, {
+        title,
+        description,
+        youtubeUrl
+      }, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       // Перенаправляем на страницу блога после успешной загрузки
       navigate('/blog');
     } catch (error) {
       console.error('Error uploading content:', error);
-      setError(error.response?.data?.message || 'Ошибка при загрузке контента');
+      setError(error.response?.data?.message || 'Ошибка при добавлении видео');
     } finally {
       setLoading(false);
     }
   };
 
+  // Если пользователь не авторизован или не админ, показываем сообщение
+  if (!user || user.role !== 'admin') {
+    return (
+      <div className="container mt-4">
+        <div className="alert alert-warning" role="alert">
+          Только администраторы могут добавлять контент
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Добавить новую запись</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Добавить новое видео</h1>
 
         {error && (
           <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4">
@@ -108,50 +105,22 @@ const UploadContent = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Медиа</label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-              <div className="space-y-1 text-center">
-                <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 48 48"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <div className="flex text-sm text-gray-600">
-                  <label
-                    htmlFor="media-upload"
-                    className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                  >
-                    <span>Загрузить файл</span>
-                    <input
-                      id="media-upload"
-                      name="media-upload"
-                      type="file"
-                      className="sr-only"
-                      onChange={handleMediaChange}
-                      accept="image/*,video/*"
-                    />
-                  </label>
-                  <p className="pl-1">или перетащите сюда</p>
-                </div>
-                <p className="text-xs text-gray-500">PNG, JPG, GIF до 10MB</p>
-              </div>
+            <label htmlFor="youtubeUrl" className="block text-sm font-medium text-gray-700">
+              Ссылка на YouTube видео
+            </label>
+            <input
+              type="url"
+              id="youtubeUrl"
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=..."
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              required
+            />
+            <div className="form-text text-sm text-gray-500">
+              Поддерживаются ссылки формата youtube.com/watch?v= и youtu.be/
             </div>
           </div>
-
-          {preview && (
-            <div className="mt-4">
-              <img src={preview} alt="Preview" className="max-w-xs rounded-lg" />
-            </div>
-          )}
 
           <div className="flex justify-end">
             <button
@@ -161,7 +130,14 @@ const UploadContent = () => {
                 loading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              {loading ? 'Загрузка...' : 'Опубликовать'}
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Добавление...
+                </>
+              ) : (
+                'Добавить видео'
+              )}
             </button>
           </div>
         </form>

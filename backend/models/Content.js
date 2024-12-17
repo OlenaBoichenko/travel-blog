@@ -6,20 +6,17 @@ const commentSchema = new mongoose.Schema({
     required: true
   },
   author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: false
-  },
-  guestAuthor: {
     type: String,
-    required: false
+    required: true
   },
   isAdmin: {
     type: Boolean,
     default: false
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-}, {
-  timestamps: true
 });
 
 const contentSchema = new mongoose.Schema({
@@ -31,14 +28,15 @@ const contentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  mediaUrl: {
+  youtubeUrl: {
     type: String,
-    required: true
-  },
-  mediaType: {
-    type: String,
-    enum: ['image', 'video'],
-    required: true
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)[a-zA-Z0-9_-]{11}$/.test(v);
+      },
+      message: props => `${props.value} не является корректной ссылкой на YouTube видео!`
+    }
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
@@ -48,22 +46,22 @@ const contentSchema = new mongoose.Schema({
   comments: [commentSchema],
   reactions: {
     likes: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      type: String
     }],
     hearts: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      type: String
     }],
     guestLikes: [{
-      type: String  // Будем хранить ID гостевого пользователя
+      type: String
     }],
     guestHearts: [{
-      type: String  // Будем хранить ID гостевого пользователя
+      type: String
     }]
   }
 }, {
   timestamps: true
 });
 
-module.exports = mongoose.model('Content', contentSchema);
+const Content = mongoose.model('Content', contentSchema);
+
+module.exports = Content;

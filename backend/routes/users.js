@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken'); // Added jwt module
 const GuestUser = require('../models/guestUser');
 
 router.post('/auth', async (req, res) => {
@@ -29,10 +30,21 @@ router.post('/auth', async (req, res) => {
       await user.save();
     }
 
-    // Отправляем информацию о пользователе (без пароля)
+    // Создаем токен
+    const token = jwt.sign(
+      { 
+        userId: user._id,
+        username: user.username
+      }, 
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // Отправляем информацию о пользователе (без пароля) и токен
     res.json({
       id: user._id,
-      username: user.username
+      username: user.username,
+      token
     });
 
   } catch (error) {

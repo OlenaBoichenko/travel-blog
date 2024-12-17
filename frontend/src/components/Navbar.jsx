@@ -22,7 +22,7 @@ const NavigationBar = ({ user, onLogout }) => {
             <Nav.Link as={Link} to="/gallery" active={isActive('/gallery')}>
               Галерея
             </Nav.Link>
-            {user && (
+            {user && user.role === 'admin' && (
               <Nav.Link as={Link} to="/upload" active={isActive('/upload')}>
                 Добавить пост
               </Nav.Link>

@@ -80,10 +80,14 @@ const Home = () => {
               <div className="route-list">
                 {[
                   'Ottawa, ON',
-                  'Thunder Bay, ON',
-                  'Winnipeg, MB',
-                  'Regina, SK',
-                  'Calgary, AB',
+                  'North Bay, ON',
+                  'Wawa, ON',
+                  'Upsala, ON',
+                  'Portage la Prairie, MB',
+                  'Saskatoon, SK',
+                  'Edmonton, AB',
+                  'Jasper, SK',
+                  'Kamloops, BC',
                   'Vancouver, BC'
                 ].map((city, index) => (
                   <Card key={city} className="mb-3 shadow-sm">

@@ -1,19 +1,51 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-module.exports = (role) => {
-  return (req, res, next) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "Нет доступа" });
+const checkAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    console.log('Auth header:', authHeader);
 
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      if (decoded.role !== role) {
-        return res.status(403).json({ message: "Недостаточно прав" });
-      }
-      req.user = decoded;
-      next();
-    } catch (error) {
-      res.status(401).json({ message: "Неверный токен" });
+    if (!authHeader) {
+      console.log('No auth header');
+      req.user = null;
+      req.isGuest = true;
+      return next();
     }
-  };
+
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      console.log('No token in auth header');
+      req.user = null;
+      req.isGuest = true;
+      return next();
+    }
+
+    console.log('Token received');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Token decoded successfully');
+
+    const user = await User.findById(decoded.userId || decoded.id);
+    console.log('User found:', user ? 'yes' : 'no');
+
+    if (!user) {
+      console.log('User not found');
+      req.user = null;
+      req.isGuest = true;
+      return next();
+    }
+
+    req.user = user;
+    req.isGuest = false;
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error.message);
+    req.user = null;
+    req.isGuest = true;
+    next();
+  }
+};
+
+module.exports = {
+  checkAuth
 };

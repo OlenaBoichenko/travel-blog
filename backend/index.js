@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const User = require('./models/User')
 const contentRoutes = require("./routes/contentRoutes");
 const userRoutes = require('./routes/users');
+const galleryRoutes = require('./routes/galleryRoutes');
 
 // Загружаем переменные окружения
 dotenv.config();
@@ -34,7 +35,7 @@ if (!fs.existsSync('uploads')) {
 app.use(cors({
   origin: function(origin, callback) {
     const allowedOrigins = ['http://localhost:5173', 'https://travel-blog-ca.netlify.app'];
-    // Разрешаем запросы без origin (например, от Postman)
+    // Разрешаем запросы от Postman
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
@@ -102,16 +103,17 @@ app.get('/video/:filename', (req, res) => {
 // Делаем папку uploads статической
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Подключаем маршруты для контента и пользователей
+// Подключаем маршруты для контента, пользователей и галереи
 app.use("/api/content", contentRoutes);
 app.use("/api/users", userRoutes);
+app.use('/api/gallery', galleryRoutes);
 
 // Подключение к MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

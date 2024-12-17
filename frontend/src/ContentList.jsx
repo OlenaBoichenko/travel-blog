@@ -16,7 +16,6 @@ const ContentList = ({ user }) => {
     try {
       const response = await axios.get(`${API_URL}/api/content`);
       setContent(response.data);
-      // Инициализируем состояние реакций для каждого поста
       const initialReactions = {};
       response.data.forEach(item => {
         initialReactions[item._id] = {
@@ -39,10 +38,9 @@ const ContentList = ({ user }) => {
         author: user ? user.username : 'Гость'
       });
 
-      // Обновляем список контента после добавления комментария
       setContent(content.map(item =>
         item._id === contentId
-          ? { ...item, comments: [...item.comments, response.data] }
+          ? { ...item, comments: [...(item.comments || []), response.data] }
           : item
       ));
       setComment('');
@@ -54,11 +52,9 @@ const ContentList = ({ user }) => {
   const handleReaction = async (contentId, reactionType) => {
     try {
       await axios.post(`${API_URL}/api/content/${contentId}/reactions`, {
-        type: reactionType,
-        isGuest: !user
+        type: reactionType
       });
 
-      // Обновляем локальное состояние реакций
       setUserReactions(prev => ({
         ...prev,
         [contentId]: {
@@ -67,11 +63,36 @@ const ContentList = ({ user }) => {
         }
       }));
 
-      // Обновляем список контента
       await fetchContent();
     } catch (error) {
       console.error('Error handling reaction:', error);
     }
+  };
+
+  const getReactionCount = (item, reactionType) => {
+    const reactions = item.reactions || {};
+    const userReactions = reactions[reactionType] || [];
+    const guestReactions = reactions[`guest${reactionType.charAt(0).toUpperCase() + reactionType.slice(1)}`] || [];
+    return userReactions.length + guestReactions.length;
+  };
+
+  const getYouTubeEmbedUrl = (url) => {
+    let videoId;
+    
+    if (url.includes('youtube.com/watch?v=')) {
+      videoId = url.split('watch?v=')[1];
+    } else if (url.includes('youtu.be/')) {
+      videoId = url.split('youtu.be/')[1];
+    } else if (url.includes('youtube.com/shorts/')) {
+      videoId = url.split('shorts/')[1];
+    }
+
+    if (videoId && videoId.includes('&')) {
+      videoId = videoId.split('&')[0];
+    }
+
+    // Добавляем параметры для улучшения производительности и уменьшения рекламы
+    return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1` : null;
   };
 
   return (
@@ -81,22 +102,18 @@ const ContentList = ({ user }) => {
       <div className="space-y-8">
         {content.map((item) => (
           <article key={item._id} className="bg-white rounded-xl shadow-lg overflow-hidden">
-            {/* Медиа контент */}
-            {item.mediaUrl && (
-              <div className="relative h-96 bg-gray-100">
-                {item.mediaType === 'image' ? (
-                  <img
-                    src={`${API_URL}${item.mediaUrl}`}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <video
-                    src={`${API_URL}${item.mediaUrl}`}
-                    controls
-                    className="w-full h-full object-cover"
-                  />
-                )}
+            {/* YouTube видео */}
+            {item.youtubeUrl && (
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                <iframe
+                  src={getYouTubeEmbedUrl(item.youtubeUrl)}
+                  className="absolute top-0 left-0 w-full h-full"
+                  title={item.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                />
               </div>
             )}
 
@@ -122,9 +139,7 @@ const ContentList = ({ user }) => {
                   }`}
                 >
                   <span className="text-2xl">👍</span>
-                  <span className="font-medium">
-                    {item.reactions.likes.length + (item.reactions.guestLikes?.length || 0)}
-                  </span>
+                  <span className="font-medium">{getReactionCount(item, 'likes')}</span>
                 </button>
 
                 <button
@@ -136,9 +151,7 @@ const ContentList = ({ user }) => {
                   }`}
                 >
                   <span className="text-2xl">❤️</span>
-                  <span className="font-medium">
-                    {item.reactions.hearts.length + (item.reactions.guestHearts?.length || 0)}
-                  </span>
+                  <span className="font-medium">{getReactionCount(item, 'hearts')}</span>
                 </button>
               </div>
 
@@ -147,10 +160,12 @@ const ContentList = ({ user }) => {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Комментарии</h3>
                 
                 <div className="space-y-4 mb-6">
-                  {item.comments.map((comment, index) => (
+                  {(item.comments || []).map((comment, index) => (
                     <div key={index} className="bg-gray-50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-gray-900">{comment.author}</span>
+                        <span className="font-medium text-gray-900">
+                          {comment.author}
+                        </span>
                         <span className="text-sm text-gray-500">
                           {format(new Date(comment.createdAt), 'dd.MM.yyyy HH:mm')}
                         </span>
@@ -167,11 +182,11 @@ const ContentList = ({ user }) => {
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Оставьте комментарий..."
-                    className="flex-1 min-w-0 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="flex-1 min-w-0 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                   <button
                     onClick={() => handleComment(item._id)}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                   >
                     Отправить
                   </button>
