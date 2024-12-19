@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { format } from 'date-fns';
-import { API_URL } from './config';
-import UploadImage from './UploadImage';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { format } from "date-fns";
+import { API_URL } from "../config";
+import UploadImage from "./UploadImage";
 
 const Gallery = ({ user }) => {
   const [images, setImages] = useState([]);
@@ -19,23 +19,23 @@ const Gallery = ({ user }) => {
 
       // Инициализируем состояние реакций
       const initialReactions = {};
-      response.data.forEach(item => {
+      response.data.forEach((item) => {
         initialReactions[item._id] = {
           likes: false,
-          hearts: false
+          hearts: false,
         };
       });
       setUserReactions(initialReactions);
     } catch (error) {
-      console.error('Error fetching images:', error);
+      console.error("Error fetching images:", error);
     }
   };
 
   const handleReaction = async (imageId, reactionType) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      
+
       await axios.post(
         `${API_URL}/api/gallery/${imageId}/reactions`,
         { type: reactionType },
@@ -43,18 +43,18 @@ const Gallery = ({ user }) => {
       );
 
       // Обновляем состояние реакций
-      setUserReactions(prev => ({
+      setUserReactions((prev) => ({
         ...prev,
         [imageId]: {
           ...prev[imageId],
-          [reactionType]: !prev[imageId][reactionType]
-        }
+          [reactionType]: !prev[imageId][reactionType],
+        },
       }));
 
       // Обновляем список изображений
       fetchImages();
     } catch (error) {
-      console.error('Error handling reaction:', error);
+      console.error("Error handling reaction:", error);
     }
   };
 
@@ -63,7 +63,10 @@ const Gallery = ({ user }) => {
 
     const reactions = item.reactions;
     const userReactions = reactions[reactionType] || [];
-    const guestReactions = reactions[`guest${reactionType.charAt(0).toUpperCase() + reactionType.slice(1)}`] || [];
+    const guestReactions =
+      reactions[
+        `guest${reactionType.charAt(0).toUpperCase() + reactionType.slice(1)}`
+      ] || [];
     return userReactions.length + guestReactions.length;
   };
 
@@ -75,7 +78,7 @@ const Gallery = ({ user }) => {
     <div className="container my-5">
       <h1 className="text-center mb-4">Галерея</h1>
 
-      {user && user.role === 'admin' && (
+      {user && user.role === "admin" && (
         <div className="mb-4">
           <UploadImage user={user} onImageUploaded={handleImageUploaded} />
         </div>
@@ -96,27 +99,31 @@ const Gallery = ({ user }) => {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h5 className="card-title mb-0">{item.title}</h5>
                   <small className="text-muted">
-                    {format(new Date(item.createdAt), 'dd.MM.yyyy')}
+                    {format(new Date(item.createdAt), "dd.MM.yyyy")}
                   </small>
                 </div>
                 <p className="card-text">{item.description}</p>
                 <div className="mt-auto">
                   <div className="d-flex justify-content-start gap-3">
                     <button
-                      onClick={() => handleReaction(item._id, 'likes')}
+                      onClick={() => handleReaction(item._id, "likes")}
                       className={`btn btn-sm d-flex align-items-center gap-1 ${
-                        userReactions[item._id]?.likes ? 'btn-primary' : 'btn-outline-primary'
+                        userReactions[item._id]?.likes
+                          ? "btn-primary"
+                          : "btn-outline-primary"
                       }`}
                     >
-                      👍 <span>{getReactionCount(item, 'likes')}</span>
+                      👍 <span>{getReactionCount(item, "likes")}</span>
                     </button>
                     <button
-                      onClick={() => handleReaction(item._id, 'hearts')}
+                      onClick={() => handleReaction(item._id, "hearts")}
                       className={`btn btn-sm d-flex align-items-center gap-1 ${
-                        userReactions[item._id]?.hearts ? 'btn-danger' : 'btn-outline-danger'
+                        userReactions[item._id]?.hearts
+                          ? "btn-danger"
+                          : "btn-outline-danger"
                       }`}
                     >
-                      ❤️ <span>{getReactionCount(item, 'hearts')}</span>
+                      ❤️ <span>{getReactionCount(item, "hearts")}</span>
                     </button>
                   </div>
                 </div>

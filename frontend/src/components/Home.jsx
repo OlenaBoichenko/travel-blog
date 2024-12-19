@@ -90,7 +90,7 @@ const Home = () => {
                    { name: 'Kamloops, BC', link: 'https://www.tripadvisor.ru/Tourism-g154932-Kamloops_British_Columbia-Vacations.html' }, 
                    { name: 'Vancouver, BC', link: 'https://www.tripadvisor.ru/Tourism-g154943-Vancouver_British_Columbia-Vacations.html' } 
                 ].map((city, index) => (
-                  <Card key={city} className="mb-3 shadow-sm">
+                  <Card key={index} className="mb-3 shadow-sm">
                     <Card.Body className="d-flex align-items-center">
                       <div className="route-number me-3">
                         <span className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { API_URL } from './config';
+import { API_URL } from '../config';
 
 const ContentList = ({ user }) => {
   const [content, setContent] = useState([]);
@@ -91,7 +91,7 @@ const ContentList = ({ user }) => {
       videoId = videoId.split('&')[0];
     }
 
-    // Добавляем параметры для улучшения производительности и уменьшения рекламы
+    // Параметры для улучшения производительности и уменьшения рекламы
     return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1` : null;
   };
 
