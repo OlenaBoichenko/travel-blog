@@ -79,16 +79,16 @@ const Home = () => {
             <Col className="col-lg-8 col-md-10 mx-auto">
               <div className="route-list">
                 {[
-                  'Ottawa, ON',
-                  'North Bay, ON',
-                  'Wawa, ON',
-                  'Upsala, ON',
-                  'Portage la Prairie, MB',
-                  'Saskatoon, SK',
-                  'Edmonton, AB',
-                  'Jasper, SK',
-                  'Kamloops, BC',
-                  'Vancouver, BC'
+                   { name: 'Ottawa, ON', link: 'https://www.tripadvisor.ru/Tourism-g155004-Ottawa_Ontario-Vacations.html' },
+                   { name: 'North Bay, ON', link: 'https://www.tripadvisor.ru/Tourism-g155000-North_Bay_Northeastern_Ontario_Ontario-Vacations.html' },
+                   { name: 'Wawa, ON', link: 'https://www.tripadvisor.ru/Tourism-g182156-Wawa_Northeastern_Ontario_Ontario-Vacations.html' },
+                   { name: 'Upsala, ON', link: 'https://www.tripadvisor.ru/Tourism-g3363967-Upsala_Thunder_Bay_District_Ontario-Vacations.html' }, 
+                   { name: 'Portage la Prairie, MB', link: 'https://www.tripadvisor.ru/Tourism-g182162-Portage_la_Prairie_Manitoba-Vacations.html' },
+                   { name: 'Saskatoon, SK', link: 'https://www.tripadvisor.ru/Tourism-g155043-Saskatoon_Saskatchewan-Vacations.html' }, 
+                   { name: 'Edmonton, AB', link: 'https://www.tripadvisor.ru/Tourism-g154914-Edmonton_Alberta-Vacations.html' }, 
+                   { name: 'Jasper, SK', link: 'https://www.tripadvisor.ru/Tourism-g154918-Jasper_Jasper_National_Park_Alberta-Vacations.html' }, 
+                   { name: 'Kamloops, BC', link: 'https://www.tripadvisor.ru/Tourism-g154932-Kamloops_British_Columbia-Vacations.html' }, 
+                   { name: 'Vancouver, BC', link: 'https://www.tripadvisor.ru/Tourism-g154943-Vancouver_British_Columbia-Vacations.html' } 
                 ].map((city, index) => (
                   <Card key={city} className="mb-3 shadow-sm">
                     <Card.Body className="d-flex align-items-center">
@@ -98,7 +98,11 @@ const Home = () => {
                           {index + 1}
                         </span>
                       </div>
-                      <h5 className="mb-0">{city}</h5>
+                      <h5 className="mb-0">
+                        <a href={city.link} target="_blank" rel="noopener noreferrer" className="text-decoration-none">
+                          {city.name}
+                        </a>
+                      </h5>
                     </Card.Body>
                   </Card>
                 ))}
