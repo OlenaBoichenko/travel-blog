@@ -80,12 +80,12 @@ const Home = () => {
               <div className="route-list">
                 {[
                    { name: 'Ottawa, ON', link: 'https://www.tripadvisor.ru/Tourism-g155004-Ottawa_Ontario-Vacations.html' },
-                   { name: 'North Bay, ON', link: 'https://www.tripadvisor.ru/Tourism-g155000-North_Bay_Northeastern_Ontario_Ontario-Vacations.html' },
+                   { name: 'Sudbury, ON', link: 'https://www.tripadvisor.ru/Tourism-g155016-Sudbury_Northeastern_Ontario_Ontario-Vacations.html' },
                    { name: 'Wawa, ON', link: 'https://www.tripadvisor.ru/Tourism-g182156-Wawa_Northeastern_Ontario_Ontario-Vacations.html' },
-                   { name: 'Upsala, ON', link: 'https://www.tripadvisor.ru/Tourism-g3363967-Upsala_Thunder_Bay_District_Ontario-Vacations.html' }, 
-                   { name: 'Portage la Prairie, MB', link: 'https://www.tripadvisor.ru/Tourism-g182162-Portage_la_Prairie_Manitoba-Vacations.html' },
-                   { name: 'Saskatoon, SK', link: 'https://www.tripadvisor.ru/Tourism-g155043-Saskatoon_Saskatchewan-Vacations.html' }, 
-                   { name: 'Edmonton, AB', link: 'https://www.tripadvisor.ru/Tourism-g154914-Edmonton_Alberta-Vacations.html' }, 
+                   { name: 'Dryden, ON', link: 'https://www.tripadvisor.ru/Tourism-g181721-Dryden_Kenora_District_Ontario-Vacations.html' }, 
+                   { name: 'Minnedosa, MB', link: 'https://www.tripadvisor.ru/Tourism-g1871869-Minnedosa_Manitoba-Vacations.html' },
+                   { name: 'Langham, SK', link: 'https://www.tripadvisor.ru/Tourism-g3671650-Langham_Saskatchewan-Vacations.html' }, 
+                   { name: 'Edson, AB', link: 'https://www.tripadvisor.ru/Tourism-g181804-Edson_Yellowhead_County_Alberta-Vacations.html' }, 
                    { name: 'Jasper, SK', link: 'https://www.tripadvisor.ru/Tourism-g154918-Jasper_Jasper_National_Park_Alberta-Vacations.html' }, 
                    { name: 'Kamloops, BC', link: 'https://www.tripadvisor.ru/Tourism-g154932-Kamloops_British_Columbia-Vacations.html' }, 
                    { name: 'Vancouver, BC', link: 'https://www.tripadvisor.ru/Tourism-g154943-Vancouver_British_Columbia-Vacations.html' } 
