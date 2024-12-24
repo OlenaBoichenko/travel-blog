@@ -92,7 +92,8 @@ const Gallery = ({ user }) => {
                 <img
                   src={`${API_URL}${item.imageUrl}`}
                   alt={item.title}
-                  className="card-img-top"
+                  className="img-fluid"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <div className="card-body d-flex flex-column">
