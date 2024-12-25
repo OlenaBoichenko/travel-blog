@@ -5,7 +5,7 @@ import { API_URL } from '../config';
 
 const ContentList = ({ user }) => {
   const [content, setContent] = useState([]);
-  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState({});
   const [userReactions, setUserReactions] = useState({});
 
   useEffect(() => {
@@ -30,6 +30,7 @@ const ContentList = ({ user }) => {
   };
 
   const handleComment = async (contentId) => {
+    const comment = comments[contentId] || '';
     if (!comment.trim()) return;
 
     try {
@@ -43,7 +44,7 @@ const ContentList = ({ user }) => {
           ? { ...item, comments: [...(item.comments || []), response.data] }
           : item
       ));
-      setComment('');
+      setComments(prev => ({ ...prev, [contentId]: '' }));
     } catch (error) {
       console.error('Error adding comment:', error);
     }
@@ -91,7 +92,6 @@ const ContentList = ({ user }) => {
       videoId = videoId.split('&')[0];
     }
 
-    // Параметры для улучшения производительности и уменьшения рекламы
     return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1` : null;
   };
 
@@ -101,9 +101,8 @@ const ContentList = ({ user }) => {
       
       <div className="row row-cols-1 g-4">
         {content.map((item) => (
-          <div key={item._id} className="col">
+          <div key={item._id} className="col-md-4 d-flex align-items-stretch">
             <div className="card shadow-sm">
-              {/* YouTube видео */}
               {item.youtubeUrl && (
                 <div className="ratio ratio-16x9">
                   <iframe
@@ -117,7 +116,6 @@ const ContentList = ({ user }) => {
                 </div>
               )}
 
-              {/* Контент */}
               <div className="card-body">
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h2 className="h5 card-title mb-0">{item.title}</h2>
@@ -128,7 +126,6 @@ const ContentList = ({ user }) => {
 
                 <p className="card-text">{item.description}</p>
 
-                {/* Реакции */}
                 <div className="d-flex gap-3 mb-4">
                   <button
                     onClick={() => handleReaction(item._id, 'likes')}
@@ -144,7 +141,6 @@ const ContentList = ({ user }) => {
                   </button>
                 </div>
 
-                {/* Комментарии */}
                 <div className="border-top pt-4">
                   <h3 className="h6 mb-4">Комментарии</h3>
                   
@@ -162,12 +158,13 @@ const ContentList = ({ user }) => {
                     ))}
                   </div>
 
-                  {/* Форма комментария */}
                   <div className="input-group">
                     <input
                       type="text"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
+                      value={comments[item._id] || ''}
+                      onChange={(e) =>
+                        setComments((prev) => ({ ...prev, [item._id]: e.target.value }))
+                      }
                       placeholder="Оставьте комментарий..."
                       className="form-control"
                     />
