@@ -85,8 +85,8 @@ const Home = () => {
                    { name: 'Dryden, ON', link: 'https://www.tripadvisor.ru/Tourism-g181721-Dryden_Kenora_District_Ontario-Vacations.html' }, 
                    { name: 'Minnedosa, MB', link: 'https://www.tripadvisor.ru/Tourism-g1871869-Minnedosa_Manitoba-Vacations.html' },
                    { name: 'Langham, SK', link: 'https://www.tripadvisor.ru/Tourism-g3671650-Langham_Saskatchewan-Vacations.html' }, 
-                   { name: 'Edson, AB', link: 'https://www.tripadvisor.ru/Tourism-g181804-Edson_Yellowhead_County_Alberta-Vacations.html' }, 
-                   { name: 'Jasper, SK', link: 'https://www.tripadvisor.ru/Tourism-g154918-Jasper_Jasper_National_Park_Alberta-Vacations.html' }, 
+                   { name: 'Wabamun, AB', link: 'https://www.tripadvisor.ru/Tourism-g2464434-Wabamun_Alberta-Vacations.html' }, 
+                   { name: 'Valemount, BC', link: 'https://www.tripadvisor.ru/Tourism-g181768-Valemount_British_Columbia-Vacations.html' }, 
                    { name: 'Kamloops, BC', link: 'https://www.tripadvisor.ru/Tourism-g154932-Kamloops_British_Columbia-Vacations.html' }, 
                    { name: 'Vancouver, BC', link: 'https://www.tripadvisor.ru/Tourism-g154943-Vancouver_British_Columbia-Vacations.html' } 
                 ].map((city, index) => (
