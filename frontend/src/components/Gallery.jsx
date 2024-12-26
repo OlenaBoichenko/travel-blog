@@ -3,16 +3,19 @@ import axios from "axios";
 import { format } from "date-fns";
 import { API_URL } from "../config";
 import UploadImage from "./UploadImage";
+import { Loader } from "./Loader";
 
 const Gallery = ({ user }) => {
   const [images, setImages] = useState([]);
   const [userReactions, setUserReactions] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchImages();
   }, []);
 
   const fetchImages = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/gallery`);
       setImages(response.data);
@@ -28,6 +31,8 @@ const Gallery = ({ user }) => {
       setUserReactions(initialReactions);
     } catch (error) {
       console.error("Error fetching images:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,6 +89,12 @@ const Gallery = ({ user }) => {
         </div>
       )}
 
+      {isLoading ? (
+        <div className="lds-container">
+            <p>Изображения загружаются...</p>
+          <Loader />
+        </div>
+      ) : (
       <div className="row mt-4">
         {images.map((item) => (
           <div key={item._id} className="col-12 col-md-6 col-lg-4 mb-4">
@@ -133,6 +144,7 @@ const Gallery = ({ user }) => {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };
