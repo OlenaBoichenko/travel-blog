@@ -5,7 +5,6 @@ import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 const Home = () => {
   return (
     <div className="pt-5">
-      {/* Hero Section */}
       <div className="bg-dark text-white py-5" style={{ minHeight: '60vh' }}>
         <div className="hero-image" style={{
           position: 'absolute',
@@ -36,7 +35,6 @@ const Home = () => {
         </Container>
       </div>
 
-      {/* Trip Details */}
       <Container className="container-lg py-5">
         <Row className="row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 justify-content-center">
           <Col className="col-sm-6 col-lg-4">
@@ -65,7 +63,6 @@ const Home = () => {
           </Col>
         </Row>
 
-        {/* Route */}
         <div className="py-5">
           <Row>
             <Col className="col-lg-8 col-md-10 mx-auto text-center">
@@ -111,7 +108,6 @@ const Home = () => {
           </Row>
         </div>
 
-        {/* What We'll See */}
         <div className="py-5">
           <Row>
             <Col className="col-lg-8 col-md-10 mx-auto text-center">

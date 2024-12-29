@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { API_URL } from '../config';
+import { Loader } from './Loader'
 
 const ContentList = ({ user }) => {
   const [content, setContent] = useState([]);
   const [comments, setComments] = useState({});
   const [userReactions, setUserReactions] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchContent();
@@ -99,6 +101,12 @@ const ContentList = ({ user }) => {
     <div className="container py-5">
       <h1 className="text-center mb-5">Путевые заметки</h1>
       
+      {isLoading ? (
+        <div className="lds-container">
+            <p>Заметки загружаются...</p>
+          <Loader />
+        </div>
+      ) : (
       <div className="row row-cols-1 g-4">
         {content.map((item) => (
           <div key={item._id} className="col-md-4 d-flex align-items-stretch">
@@ -181,6 +189,7 @@ const ContentList = ({ user }) => {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };
