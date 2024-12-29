@@ -15,6 +15,7 @@ const ContentList = ({ user }) => {
   }, []);
 
   const fetchContent = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/content`);
       setContent(response.data);
@@ -28,6 +29,8 @@ const ContentList = ({ user }) => {
       setUserReactions(initialReactions);
     } catch (error) {
       console.error('Error fetching content:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
