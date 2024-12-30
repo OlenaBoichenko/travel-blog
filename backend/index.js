@@ -27,9 +27,9 @@ if (!process.env.MONGODB_URI) {
 const app = express();
 
 // Создаем папку uploads, если её нет
-if (!fs.existsSync('uploads')) {
-  fs.mkdirSync('uploads');
-}
+// if (!fs.existsSync('uploads')) {
+//   fs.mkdirSync('uploads');
+// }
 
 // Настройка CORS
 app.use(cors({

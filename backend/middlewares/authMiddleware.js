@@ -12,6 +12,7 @@ const checkAuth = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
+    
     if (!token) {
       req.user = null;
       req.isGuest = true;

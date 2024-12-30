@@ -46,12 +46,15 @@ router.post('/auth', async (req, res) => {
       username: user.username,
       token
     });
+    
 
   } catch (error) {
     console.error('Error in user auth:', error);
     res.status(500).json({ message: 'Ошибка сервера при авторизации' });
   }
 });
+
+
 
 // Проверка доступности имени пользователя
 router.post('/check-username', async (req, res) => {

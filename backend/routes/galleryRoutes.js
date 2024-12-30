@@ -1,38 +1,33 @@
 const express = require('express');
+const dotenv = require("dotenv");
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { checkAuth } = require('../middlewares/authMiddleware');
 const Gallery = require('../models/Gallery');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+dotenv.config();
+
+// Настройка Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // Настройка multer для загрузки изображений
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = 'uploads/gallery';
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'gallery', // Имя папки в Cloudinary
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif'],
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
 });
 
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Разрешены только изображения'));
-    }
-  },
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB
-  }
-});
+const upload = multer({storage});
 
 // Получить все изображения
 router.get('/', async (req, res) => {
@@ -58,7 +53,7 @@ router.post('/', checkAuth, upload.single('image'), async (req, res) => {
     const image = new Gallery({
       title: req.body.title,
       description: req.body.description,
-      imageUrl: '/uploads/gallery/' + req.file.filename,
+      imageUrl: req.file.path,
       reactions: {
         likes: [],
         hearts: [],
@@ -71,6 +66,7 @@ router.post('/', checkAuth, upload.single('image'), async (req, res) => {
     res.status(201).json(savedImage);
   } catch (error) {
     res.status(400).json({ message: error.message });
+    console.error('Ошибка при загрузке изображения:', error);
   }
 });
 

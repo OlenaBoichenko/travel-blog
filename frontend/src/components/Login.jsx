@@ -21,8 +21,6 @@ const Login = ({ onLogin }) => {
         password,
       });
 
-      console.log('Login response:', response.data);
-
       // Проверяем наличие токена и данных пользователя
       if (response.data.token && (response.data.user || response.data.role)) {
         localStorage.setItem('token', response.data.token);

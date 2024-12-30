@@ -101,7 +101,7 @@ const Gallery = ({ user }) => {
             <div className="card h-100">
               <div className="ratio ratio-1x1">
                 <img
-                  src={`${API_URL}${item.imageUrl}`}
+                  src={item.imageUrl}
                   alt={item.title}
                   className="img-fluid"
                   style={{ objectFit: "cover" }}

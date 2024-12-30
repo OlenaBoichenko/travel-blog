@@ -50,6 +50,7 @@ const UploadImage = ({ user, onImageUploaded }) => {
         },
       });
 
+
       if (response.data) {
         setTitle("");
         setDescription("");
