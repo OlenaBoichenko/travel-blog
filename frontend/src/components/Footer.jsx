@@ -4,6 +4,7 @@ import { FaEnvelope, FaMapMarkerAlt, FaGithub, FaLinkedin } from 'react-icons/fa
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const previosYear =  new Date().getFullYear() - 1;
 
   return (
     <footer className="bg-primary text-light py-4 mt-auto">
@@ -19,13 +20,13 @@ const Footer = () => {
             </p>
             <p className="mb-1">
               <FaMapMarkerAlt className="me-2" />
-              Sydney, BC
+              Victoria, BC
             </p>
           </Col>
           
           <Col md={4} className="text-center mb-3 mb-md-0">
             <p className="mb-0">
-              © {currentYear}{' '}
+              © {previosYear}{'-'}{currentYear}{' '}
               <a 
                 href="https://olenaportfolio.netlify.app" 
                 target="_blank" 
